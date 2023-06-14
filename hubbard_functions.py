@@ -1,7 +1,11 @@
 '''These functions are for an N site open lattice model with onsite energy, hopping and nearest interaction terms, '''
-import math
-import numpy as np
+import numpy as np 
+import math 
 from itertools import combinations
+import matplotlib.pyplot as plt
+from scipy.linalg import eigh, block_diag
+from tabulate import tabulate
+import time
 
 def subspace_dim(N, r) : 
     '''
