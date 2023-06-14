@@ -22,7 +22,7 @@ The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\
 ### 1.2 Expectation of Occupation Number at Different Sites
 
 <p align="center">
-<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eig_occ_n4e1TB.png" alt="Example Image" width="400"> <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_n4e1_TB.png" alt="Example Image" width="400"> 
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eig_occ_n4e1TB.png" alt="Example Image" width="300"> <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_n4e1_TB.png" alt="Example Image" width="300"> 
 </p> 
 
 ## 2. One Orbital Single Spin Hubbard Model 
