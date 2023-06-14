@@ -7,43 +7,37 @@ from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
 import time
 
-def subspace_dim(N, r) : 
+def subspace_dim(N,r) : 
     '''
     input : number of lattice sites (N), number of electrons (r) 
     output : dimension of this subspace 
     '''
-    dim = math.comb(N,r)
-    return dim
+    return math.comb(N,r)
 
 def fock_dim_dict(N) : 
     '''
-    input : N => Number of lattice points; uses function subspace_dim
+    input : N => Number of lattice points
     output : Dimension of fock space (dim_fock), dictionary of all subspaces with dimension { (r) : dim_sub } 
     '''
     dim_dict = {}
-    dim_fock = 0 
     for r in range(N+1) : 
-        sub_dim = subspace_dim(N,r)
-        dim_dict[r] = sub_dim
-        dim_fock += sub_dim
-    return dim_fock, dim_dict
+        dim_dict[r] = subspace_dim(N,r)
+    return sum(dim_dict.values()), dim_dict
 
 def basis_set(N,r) : 
     '''
     input = number of lattice sites (N), number of electrons (r) 
     output = list of basis [0110] example for N=4, r=2
     '''
-    basis = []
-    lattice = list(range(N))
-    choices = list(combinations(lattice, r))
-    for choice in choices : 
-        state = [False]*N
-        for index in choice : 
-            state[index] = True
-        basis.append(state)
-    basis_array = np.array(basis)
-    return basis_array
-
+    basis_dim = subspace_dim(N,r)
+    basis_set = np.zeros((basis_dim,basis_dim), dtype=bool)
+    choices = list(combinations(list(range(N)), r))
+    for i in range(len(choices)) : 
+        basis = np.zeros(basis_dim, dtype=bool)
+        for index in choices[i] : 
+            basis[index] = True
+        basis_set[i] = basis
+        
 def H_subspace(N,r,e,t,U) :
     '''
     input = N =Number of lattice sites, r = number of electrons, 
