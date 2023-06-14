@@ -5,7 +5,7 @@ from itertools import combinations
 import matplotlib.pyplot as plt
 from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
-import time
+
 
 def subspace_dim(N,r) : 
     '''
@@ -29,55 +29,48 @@ def basis_set(N,r) :
     input = number of lattice sites (N), number of electrons (r) 
     output = list of basis [0110] example for N=4, r=2
     '''
-    basis_dim = subspace_dim(N,r)
-    basis_set = np.zeros((basis_dim,basis_dim), dtype=bool)
+    sub_dim = subspace_dim(N,r)
+    basis_set = np.zeros((sub_dim,N), dtype=bool)
     choices = list(combinations(list(range(N)), r))
     for i in range(len(choices)) : 
-        basis = np.zeros(basis_dim, dtype=bool)
+        basis = np.zeros(N, dtype=bool)
         for index in choices[i] : 
             basis[index] = True
         basis_set[i] = basis
+    return basis_set 
         
 def H_subspace(N,r,e,t,U) :
     '''
-    input = N =Number of lattice sites, r = number of electrons, 
-    e=epsilon/onsite energy, t= hopping constant, U= interaction coefficient
-    uses function subspace_dim, basis_set
-    output = Hamiltonian of subspace
+    input : Specifications of the model : N,r,e,t,U
+    output : return Hamiltonian of the subspace
     '''
     sub_dim = subspace_dim(N,r)
     H_sub = np.zeros((sub_dim,sub_dim))
     basis = basis_set(N,r)
+
     #H_D
     np.fill_diagonal(H_sub, e*r)
 
     #H_T
-    H = np.zeros((sub_dim,sub_dim))
     index = -1
-    for state in basis : 
+    for state in basis :
+        #print(state)
         index += 1
-        final_list = []
         final_index = []
         for i in range(len(state)-1) : 
             if state[i] == False and state[i+1] == True  :
                 new_state = state.copy()
                 new_state[i] = True
                 new_state[i+1] = False 
-                final_list.append(new_state)
                 final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
             if state[i] == True and state[i+1] == False :
                 new_state = state.copy()
                 new_state[i] = False
                 new_state[i+1] = True 
-                final_list.append(new_state)
                 final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
-        #print(final_index)
-        if final_index != [] :
-            #print("yes")
-            for f in final_index : 
-                #print(f)
-                #print(index)
-                H_sub[f][index] += 1*t
+        for f in final_index : 
+            H_sub[f][index] += t
+
     #H_U
     U_diag = []
     for state in basis :
@@ -90,22 +83,14 @@ def H_subspace(N,r,e,t,U) :
     return H_sub
 
 def full_hamiltonian(N,e,t,U): 
-    ''' 
-    input = N,e,t,u; uses function H_subspace
-    output = Hamiltonian of full fock space
-    '''
     H_sub_list = []
     for r in range(N+1) : 
         H_sub = H_subspace(N,r,e,t,U)
-        print("H_sub:\n",H_sub)
         e_sub, v_sub = np.linalg.eigh(H_sub)
-#         print("Eigenvalues of H_sub : \n",e_sub)
-#         print("Eigenvectors of H_sub : \n",v_sub)
-        print("---------")
-        #print(e_sub)
         H_sub_list.append(H_sub)
     H_fock = block_diag(*H_sub_list) 
     return H_fock
+
 
 ''' Below functions are for an N site open lattice model, where electrons can be in up or down spin 
 and the hamiltonian includes the hopping and onsite energy terms ''' 
