@@ -1,5 +1,9 @@
 '''These functions are for an N site open lattice model with onsite energy, hopping and nearest interaction terms, '''
-def subspace_dim(N,r) : 
+import math
+import numpy as np
+from itertools import combinations
+
+def subspace_dim(N, r) : 
     '''
     input : number of lattice sites (N), number of electrons (r) 
     output : dimension of this subspace 
