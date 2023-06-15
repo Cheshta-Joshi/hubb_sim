@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
 
-
 def subspace_dim(N,r) : 
     '''
     input : number of lattice sites (N), number of electrons (r) 
@@ -39,9 +38,9 @@ def basis_set(N,r) :
         basis_set[i] = basis
     return basis_set 
         
-def H_subspace(N,r,e,t,U) :
+def H_subspace(N,r,e,t,U,chain_type) :
     '''
-    input : Specifications of the model : N,r,e,t,U
+    input : Specifications of the model : N,r,e,t,U,chain_type ("open" or "closed")
     output : return Hamiltonian of the subspace
     '''
     sub_dim = subspace_dim(N,r)
@@ -54,19 +53,24 @@ def H_subspace(N,r,e,t,U) :
     #H_T
     index = -1
     for state in basis :
-        #print(state)
         index += 1
         final_index = []
-        for i in range(len(state)-1) : 
-            if state[i] == False and state[i+1] == True  :
+        for i in range(len(state)-int(chain_type=='open')) : 
+            if state[i] == False and state[(i+1)%N] == True  :
+                j = i+1
+                if chain_type == 'closed' : 
+                    j = (i+1)%N
                 new_state = state.copy()
                 new_state[i] = True
-                new_state[i+1] = False 
+                new_state[j] = False 
                 final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
-            if state[i] == True and state[i+1] == False :
+            if state[i] == True and state[(i+1)%N] == False :
+                j = i+1
+                if chain_type == 'closed' : 
+                    j = (i+1)%N
                 new_state = state.copy()
                 new_state[i] = False
-                new_state[i+1] = True 
+                new_state[j] = True 
                 final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
         for f in final_index : 
             H_sub[f][index] += t
@@ -75,17 +79,20 @@ def H_subspace(N,r,e,t,U) :
     U_diag = []
     for state in basis :
         count = 0
-        for i in range(N-1) : 
-            if state[i] == True and state[i+1] == True : 
+        for i in range(N- int(chain_type == 'open')) : 
+            j = i+1
+            if chain_type == 'closed' : 
+                j = (i+1)%N
+            if state[i] == True and state[j] == True : 
                 count +=1
         U_diag.append(U*count)
     H_sub += np.diag(U_diag)
     return H_sub
 
-def full_hamiltonian(N,e,t,U): 
+def H_fock(N,e,t,U,chain_type): 
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub = H_subspace(N,r,e,t,U)
+        H_sub = H_subspace(N,r,e,t,U,chain_type)
         e_sub, v_sub = np.linalg.eigh(H_sub)
         H_sub_list.append(H_sub)
     H_fock = block_diag(*H_sub_list) 
