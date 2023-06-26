@@ -49,7 +49,7 @@ The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\
 
 $$ D(\omega )= \sum _k \delta (\omega - \epsilon _k)$$
 <p align="center">
-<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eigenvalue%20plot%20TB.png" alt="Plot of eigenvalues of TB model" width="400">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos.png" alt="Plot of eigenvalues of TB model" width="400">
 </p>
 
 ## 2. One Orbital Spinless Hubbard Model 
