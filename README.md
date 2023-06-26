@@ -7,7 +7,7 @@ The Tight Binding Model describes the electronic structure of solids by consider
 
 $$ H_{\text{sys}} = \sum_{i\sigma} \epsilon_i c_{i \sigma}^{\dagger} c_{i \sigma} + t \sum_{i \sigma} (c_{i\sigma}^\dagger c_{(i+1) \sigma} +h.c. ) $$
 
-$$ = \sum_{k \sigma} (\epsilon + te^{-2 \pi i k/N}) c^\dagger_{k \sigma} c_{k \sigma} $$
+$$ = \sum_{k \sigma} (\epsilon + 2 t \cos{\frac{2 \pi k}{N}}) c^\dagger_{k \sigma} c_{k \sigma} $$
 
 Here, $c^\dagger_{l \sigma}$ is the creation operator which creates an electron with spin $\sigma$ at site l 
 
@@ -39,8 +39,14 @@ The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_periodic.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_periodic.png" alt="Example Image" width="300"> 
 </p> 
 
+#### 1.2.4 Increasing Onsite energies 
 
-## 2. One Orbital Single Spin Hubbard Model 
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_inc.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_inc.png" alt="Example Image" width="300"> 
+</p> 
+
+
+## 2. One Orbital Spinless Hubbard Model 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term. 
 $$H = \sum_i \epsilon _{i} c^\dagger _{i} c _{i} + t \sum _{i} (c^\dagger _{i} c _{i+1} + h.c.) + U \sum _{i} n _{i} n _{i+1}$$
 
