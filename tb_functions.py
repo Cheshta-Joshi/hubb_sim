@@ -40,3 +40,22 @@ def tb0_state_occ(states) :
     plt.legend()
 
     return states_occ
+
+def density_of_states(eigval,n_centers) : 
+    '''
+    Input : eigenvalues of the model, number of points where density is to be found
+    Output : density of states, plots density of states graph 
+    '''
+    gamma = (eigval[-1]-eigval[0])/n_centers
+    centers = np.linspace(eigval[0], eigval[-1], num=n_centers)
+    
+    density = np.zeros(n_centers)
+    for i, center in enumerate(centers):
+        lorentz = np.sum(1 / np.pi * (gamma / 2) / ((center - eigval)**2 + (gamma / 2)**2))
+        density[i] = lorentz
+        
+    plt.plot(centers,density)
+    plt.xlabel('Energy of system')
+    plt.ylabel('Density of states')
+    plt.title("Density of states")
+    return density
