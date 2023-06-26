@@ -24,8 +24,21 @@ The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\
 #### 1.2.1 Constant Onsite energies 
 
 <p align="center">
-<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eig_occ_n4e1TB.png" alt="Example Image" width="300"> <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_n4e1_TB.png" alt="Example Image" width="300"> 
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_const.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_const.png" alt="Example Image" width="300"> 
 </p> 
+
+#### 1.2.2 Constant Onsite energies but peaks at the middle point
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_peak.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_peak.png" alt="Example Image" width="300"> 
+</p> 
+
+#### 1.2.3 Periodic Onsite energies 
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_periodic.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_periodic.png" alt="Example Image" width="300"> 
+</p> 
+
 
 ## 2. One Orbital Single Spin Hubbard Model 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term. 
