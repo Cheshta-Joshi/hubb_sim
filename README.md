@@ -13,13 +13,13 @@ Here, $c^\dagger_{l \sigma}$ is the creation operator which creates an electron 
 
 The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\epsilon + 2t\cos k$, where k ranges from 1 to N. 
 
-### 1.1 Plot of eigenvalues of a tight binding model 
+### 1.1 Eigenvalues of a tight binding model 
 
 <p align="center">
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eigenvalue%20plot%20TB.png" alt="Plot of eigenvalues of TB model" width="400">
 </p>
   
-### 1.2 Expectation of Occupation Number for ground state and highest energy state
+### 1.2 Occupation of Eigenstates
 
 #### 1.2.1 Constant Onsite energies 
 
@@ -45,6 +45,12 @@ The tight binding Hamiltonian gives a Block diagonal matrix, with eigenvalues $\
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_inc.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_inc.png" alt="Example Image" width="300"> 
 </p> 
 
+### 1.3 Density of States 
+
+$$ D(\omega )= \sum _k \delta (\omega - \epsilon _k)$$
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/eigenvalue%20plot%20TB.png" alt="Plot of eigenvalues of TB model" width="400">
+</p>
 
 ## 2. One Orbital Spinless Hubbard Model 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term. 
