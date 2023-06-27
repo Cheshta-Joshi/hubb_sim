@@ -1,7 +1,7 @@
 # Quantum Simulation of Lattice Models 
 In this project, we study lattice models like **Tight Binding Model**, **Hubbard Model**. We find the basis states of these models, generate their Hamiltonian and study their eigenvalues and eigenstates. 
 
-## 1. Tight Binding Model 
+## 1. One-Orbital, Spinless Tight Binding Model 
 
 The Tight Binding Model describes the electronic structure of solids by considering the onsite energies and hopping energy of electrons. 
 
@@ -51,6 +51,15 @@ $$ D(\omega )= \sum _k \delta (\omega - \epsilon _k)$$
 <p align="center">
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos.png" alt="Plot of eigenvalues of TB model" width="400">
 </p>
+
+### 1.4 Jordan-Wigner Transformation  
+
+So far, we were representing and solving the tight binding hamiltonian in terms of the fermionic creation $c^{\dagger} _j$ and annihilation $c_j$  operators. To be able to implement this on a quantum computer, we need to convert it into a spin problem. Jordan-Wigner transformation maps these operators to spin operators that we can eventually implement on quantum computers in the forms of quantum gates. We will use the following mapping strategy to do the same :   
+
+$$c^{\dagger} _j = \frac{X_j-iY_j}{2}$$   
+
+$$c_j = \frac{X_j+iY_j}{2}$$  
+
 
 ## 2. One Orbital Spinless Hubbard Model 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term. 
