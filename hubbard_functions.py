@@ -41,7 +41,7 @@ def basis_set(N,r) :
 def H_subspace(N,r,e,t,U,chain_type) :
     '''
     input : Specifications of the model : N,r,e,t,U,chain_type ("open" or "closed")
-    output : return Hamiltonian of the subspace
+    output : return Hamiltonian of the subspaceconda 
     '''
     sub_dim = subspace_dim(N,r)
     H_sub = np.zeros((sub_dim,sub_dim))
