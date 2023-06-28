@@ -6,98 +6,161 @@ import matplotlib.pyplot as plt
 from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
 
-def subspace_dim(N,r) : 
+def spinless_sub_dim(N,r) : 
     '''
     input : number of lattice sites (N), number of electrons (r) 
     output : dimension of this subspace 
     '''
     return math.comb(N,r)
 
-def fock_dim_dict(N) : 
+def spinless_fock_dim(N) : 
     '''
     input : N => Number of lattice points
     output : Dimension of fock space (dim_fock), dictionary of all subspaces with dimension { (r) : dim_sub } 
     '''
-    dim_dict = {}
+    dim_dict = {} 
     for r in range(N+1) : 
-        dim_dict[r] = subspace_dim(N,r)
+        dim_dict[r] = spinless_sub_dim(N,r)
     return sum(dim_dict.values()), dim_dict
 
-def basis_set(N,r) : 
+def spinless_basis(N,r) : 
     '''
     input = number of lattice sites (N), number of electrons (r) 
     output = list of basis [0110] example for N=4, r=2
     '''
-    sub_dim = subspace_dim(N,r)
-    basis_set = np.zeros((sub_dim,N), dtype=bool)
-    choices = list(combinations(list(range(N)), r))
-    for i in range(len(choices)) : 
-        basis = np.zeros(N, dtype=bool)
-        for index in choices[i] : 
-            basis[index] = True
-        basis_set[i] = basis
-    return basis_set 
+    basis_set = []
+    lattice = list(range(N))
+    places = list(combinations(lattice, r))
+    for combination in places : 
+        basis = [False] *N
+        for index in combination : 
+            basis[index] = True 
+        basis_set.append(basis)
+    return basis_set
         
-def H_subspace(N,r,e,t,U,chain_type) :
-    '''
-    input : Specifications of the model : N,r,e,t,U,chain_type ("open" or "closed")
-    output : return Hamiltonian of the subspaceconda 
-    '''
-    sub_dim = subspace_dim(N,r)
-    H_sub = np.zeros((sub_dim,sub_dim))
-    basis = basis_set(N,r)
+def hubb0_model(N,r,t,e,U): 
+    ''' Generalised Tight Binding (spinless) model for periodic boundary condition
+    Input : Number of lattice sites (int), number of electrons(int), hopping constant (int/float), onsite energies (list), interaction term U (int)
+    Output : Tight binding Hamiltonian, eigenvalues and eigenvectors of the matrix ''' 
+    dim = spinless_sub_dim(N,r)
+    #Special Cases
+    if r==0 : 
+        H = np.zeros(1)
+        eigval = H[0]
+        new_vec = H
+    elif dim == 1 and r!= 0 : 
+        H = np.array(e[0]+U)
+        eigval = H
+        new_vec = H
+    else : 
+        H = np.zeros((dim, dim))
+        basis_set = spinless_basis(N,r)
+        #H_diagonal, onsite energy terms
+        n_diag = np.zeros(dim)
+        for i in range(dim) : 
+            for j in range(N) : 
+                n_diag[i] += e[j]*basis_set[i][j]
+        np.fill_diagonal(H,n_diag)
+        #H_T Hopping terms 
+        for basis_index,basis in enumerate(basis_set) : 
+            for site in range(len(basis)) : 
+                if basis[site] == False and basis[(site+1)%N] == True : 
+                    new_state = basis.copy()
+                    new_state[site] = True
+                    new_state[(site+1)%N] = False 
+                    for i in range(len(basis_set)) : 
+                        if basis_set[i] == new_state: 
+                            f_index = i
+                    H[f_index][basis_index] +=t
+                if N != 2 : 
+                    if basis[site] == True and basis[(site+1)%N] == False : 
+                        new_state = basis.copy()
+                        new_state[site] = False
+                        new_state[(site+1)%N] = True 
+                        for i in range(len(basis_set)) : 
+                            if basis_set[i] == new_state : 
+                                f_index = i
+                        H[f_index][basis_index] +=t 
+        #H_U, interaction terms
+        for i in range(dim) :
+            count = 0
+            for j in range(N) : 
+                if basis_set[i][j] == 1 and basis_set[i][(j+1)%N] == 1: 
+                    count += 1 
+            H[i][i] += count * U
+        eigval,eigvec = np.linalg.eigh(H)
+        new_vec = list(zip(*eigvec))                   
+    return H,eigval,new_vec
 
-    #H_D
-    np.fill_diagonal(H_sub, e*r)
-
-    #H_T
-    index = -1
-    for state in basis :
-        index += 1
-        final_index = []
-        for i in range(len(state)-int(chain_type=='open')) : 
-            if state[i] == False and state[(i+1)%N] == True  :
-                j = i+1
-                if chain_type == 'closed' : 
-                    j = (i+1)%N
-                new_state = state.copy()
-                new_state[i] = True
-                new_state[j] = False 
-                final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
-            if state[i] == True and state[(i+1)%N] == False :
-                j = i+1
-                if chain_type == 'closed' : 
-                    j = (i+1)%N
-                new_state = state.copy()
-                new_state[i] = False
-                new_state[j] = True 
-                final_index.append(np.where((basis == new_state).all(axis=1))[0][0])
-        for f in final_index : 
-            H_sub[f][index] += t
-
-    #H_U
-    U_diag = []
-    for state in basis :
-        count = 0
-        for i in range(N- int(chain_type == 'open')) : 
-            j = i+1
-            if chain_type == 'closed' : 
-                j = (i+1)%N
-            if state[i] == True and state[j] == True : 
-                count +=1
-        U_diag.append(U*count)
-    H_sub += np.diag(U_diag)
-    return H_sub
-
-def H_fock(N,e,t,U,chain_type): 
+def hubb0_full(N,e,t,U): 
+    '''Full Block Diagonal Hamiltonian for some N length closed lattice '''
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub = H_subspace(N,r,e,t,U,chain_type)
-        e_sub, v_sub = np.linalg.eigh(H_sub)
+        H_sub,e_sub,v_sub = hubb0_model(N,r,t,e,U)
         H_sub_list.append(H_sub)
-    H_fock = block_diag(*H_sub_list) 
-    return H_fock
+    H = block_diag(*H_sub_list) 
+    return H
 
+def spinless_state_vec(basis) : 
+    '''Vector represnetation of basis state
+    Input : Boolean list/array of a basis
+    Output : Vector representation of the basis'''
+    N = len(basis) 
+    r = np.count_nonzero(basis)
+    dim = spinless_sub_dim(N,r)
+    basis_set = spinless_basis(N,r)
+    i =-1
+    index=0
+    for state in basis_set : 
+        i+=1
+        vec = np.zeros(dim)
+        if state == basis : 
+            index = i
+
+        vec[index] = 1
+    return vec
+    
+def spinless_state_occupation(states) :
+    '''Describes occupation of eigenstates over the lattice sites 
+    Input : list of eigenstates
+    Output : plots the occuptation number graph and 
+    returns list of occupation number over sites for all thes states (list of lists)'''
+    num_states = len(states)
+    dim = len(states[0])
+    vec_site_occ = []
+    basis_set = spinless_basis(N,r)
+    for index,vec in enumerate(states) : 
+        site_occ = np.zeros(N)
+        for site in range(N) : 
+            for i in range(dim) : 
+                site_occ[site] += np.abs(vec[i])**2 *basis_set[i][site]
+        plt.plot(range(N), site_occ, label='vec {:.2f}'.format(index))
+        vec_site_occ.append(site_occ)
+    plt.xlabel('sites')
+    plt.ylabel('<n>')
+    plt.title("Occupation of states wrt sites")
+    plt.legend()
+
+def density_of_states(eigval,n_centers,zoom) :
+    '''Energy density of states
+    Input : eigenvalues (list), Number of points for density calculation, Zoom the density part of the plot
+    Output : Plot of energy density of states]'''
+    gamma = (eigval[-1]-eigval[0])/n_centers
+    centers = np.linspace(eigval[0]-n_centers/zoom, eigval[-1]+n_centers/zoom, num=n_centers)
+    
+    density = np.zeros(n_centers)
+    for i, center in enumerate(centers):
+        if center < eigval[0] or center > eigval[-1]: 
+            density[i] = 0 
+        else : 
+            lorentz = np.sum(1 / np.pi * (gamma / 2) / ((center - eigval)**2 + (gamma / 2)**2))
+            density[i] = lorentz
+    norm_density = [float(i)/sum(density) for i in density]
+    plt.plot(centers,norm_density)
+    plt.xlabel('Energy of system')
+    plt.ylabel('Density of states')
+    plt.title("Density of states")
+    return density
 
 ''' Below functions are for an N site open lattice model, where electrons can be in up or down spin 
 and the hamiltonian includes the hopping and onsite energy terms ''' 
