@@ -83,4 +83,13 @@ $$H = \sum_i \epsilon _{i} c^\dagger _{i} c _{i} + t \sum _{i} (c^\dagger _{i} c
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/basis_time_vs_lattice.png" width="400">
 </p>
 
+### 2.4 Occupation and Density of States  
 
+We simulate the Hamiltonian of the 1-orital spinless Hubbard model, calculate its eigenvalues, eigenstates and find some properties related to them. Expectation of occupation number of a site with respect to an eigenstate tells the probability of the eigenstate occupying that site. While, the Density of States tells the distribution of these eigenstates around certain points. We take a Hubbard model with 12 lattice sites and study it for different electron occupation.   
+Note that the onsite energy is taken to be constant , e= [1,1,1,...,1] , hopping constant, t is 1 and interaction coefficient, U is also 1.  
+
+#### 2.4.1 N=12, r=1  
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_inc.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_inc.png" alt="Example Image" width="300"> 
+</p> 
