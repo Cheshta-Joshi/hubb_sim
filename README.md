@@ -85,11 +85,35 @@ $$H = \sum_i \epsilon _{i} c^\dagger _{i} c _{i} + t \sum _{i} (c^\dagger _{i} c
 
 ### 2.4 Occupation and Density of States  
 
-We simulate the Hamiltonian of the 1-orital spinless Hubbard model, calculate its eigenvalues, eigenstates and find some properties related to them. Expectation of occupation number of a site with respect to an eigenstate tells the probability of the eigenstate occupying that site. While, the Density of States tells the distribution of these eigenstates around certain points. We take a Hubbard model with 12 lattice sites and study it for different electron occupation.   
+We simulate the Hamiltonian of the 1-orital spinless Hubbard model, calculate its eigenvalues, eigenstates and find some properties related to them. Expectation of occupation number of a site with respect to an eigenstate tells the probability of the eigenstate occupying that site. While, the Density of States tells the distribution of these eigenstates around certain points. We take a Hubbard model with 12 lattice sites and study it for different electron occupation. Here, we study these two properties for the ground state and for an eigenstate with medium eigenvalue, eigvec[N//2]  
 Note that the onsite energy is taken to be constant , e= [1,1,1,...,1] , hopping constant, t is 1 and interaction coefficient, U is also 1.  
 
 #### 2.4.1 N=12, r=1  
 
 <p align="center">
-<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/e_inc.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ_inc.png" alt="Example Image" width="300"> 
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ12_1.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos12_1.png" width="300"> 
+</p>   
+
+#### 2.4.2 N=12, r=11  
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ12_11.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos12_11.png" width="300"> 
+</p>   
+
+#### 2.4.3 N=12, r=3  
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ12_3.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos12_3.png" width="300"> 
+</p>   
+
+#### 2.4.4 N=12, r=9  
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ12_9.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos12_9.png" width="300"> 
+</p>  
+
+#### 2.4.5 N=12, r=6  
+
+<p align="center">
+<img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/occ12_6.png" alt="Example Image" width="300">   &nbsp; &nbsp; &nbsp; &nbsp;      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos12_6.png" width="300"> 
 </p> 
