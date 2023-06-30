@@ -1,25 +1,61 @@
-from qiskit import * 
 import numpy as np
-from qiskit.opflow import (I, X,Y,Z,StateFn, Zero, One, Plus, Minus, H, CX,
-                           DictStateFn, VectorStateFn, CircuitStateFn, OperatorStateFn)
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
 
-N = 4 
-e = 1
-t = 2
-U = 3
+N = 3
+e = [1]*N
+t = 1
+H = np.zeros((2**N,2**N))
+X = [[0,1],
+    [1,0]]
+Y = [[0,-1j],
+    [1j,0]]
+Plus = np.array([[0,1],
+       [0,0]])
+Minus = np.array([[0,0],
+        [1,0]])
 
-initial_state = One^N
-s_plus = (X - 1j*Y)/2
-s_minus = (X + 1j*Y)/2
+H_T = np.zeros((2**N,2**N))
+for j in range(N) : 
+    mat_t = Minus @ Plus 
+    t1 = np.kron(np.eye(2**j),mat_t)
+    t_f = np.kron(t1,np.eye(2**(N-j-1)))
+    H_T += e[j]*t_f
 
-r = 1
-op = e*((s_plus @ s_minus) ^ I) + U*((s_plus @ s_minus)^(s_plus @ s_plus)) + t *((s_plus ^ s_minus)+ (s_minus ^s_plus))
+pairs = []
+for i in range(N) : 
+    pairs.append([i,(i+1)%N])  
+    
+H_hopp = np.zeros((2**N,2**N))
+for pair in pairs : 
+    i = pair[0]
+    j = pair[1]
+    mat_list = [np.eye(2)] * N
+    mat_list[i] = Minus
+    mat_list[j] = Plus
+    #print(mat_list)
+    A = mat_list[0]
+    for k in range(N-1) : 
+        B = mat_list[k+1]
+        tensor = np.kron(A,B)
+        A = tensor 
+        
+    H_hopp += t*tensor
+if N != 2 :   
+    for pair in pairs : 
+        i = pair[0]
+        j = pair[1]
+        mat_list = [np.eye(2)] * N
+        mat_list[i] = Plus
+        mat_list[j] = Minus
+        #print(mat_list)
+        A = mat_list[0]
+        for k in range(N-1) : 
+            B = mat_list[k+1]
+            tensor = np.kron(A,B)
+            A = tensor 
 
-x = r
-y = N-r-2
-full_op = (I^x) ^ op ^ (I^y) 
-
-print(full_op.eval(initial_state))
-
-
-
+        H_hopp += t*tensor
+H=H_hopp+H_T     
+print(H)
+    
