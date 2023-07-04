@@ -48,9 +48,9 @@ def hubb0_model(N,r,t,e,U):
         H = np.zeros(1)
         eigval = H[0]
         new_vec = H
-    elif dim == 1 and r!= 0 : 
-        H = np.array(e[0]+U)
-        eigval = H
+    elif r==N : 
+        H = [[r]]
+        eigval = H[0]
         new_vec = H
     else : 
         H = np.zeros((dim, dim))
