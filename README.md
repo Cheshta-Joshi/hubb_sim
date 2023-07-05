@@ -5,9 +5,9 @@ In this project, we study lattice models like **Tight Binding Model**, **Hubbard
 
 The Tight Binding Model describes the electronic structure of solids by considering the onsite energies and hopping energy of electrons. 
 
-$$ H_{\text{sys}} = \sum_{i\sigma} \epsilon_i c_{i \sigma}^{\dagger} c_{i \sigma} + t \sum_{i \sigma} (c_{i\sigma}^\dagger c_{(i+1) \sigma} +h.c. ) $$
+$$ H_{\text{sys}} = \sum_{i} \epsilon_i c_{i }^{\dagger} c_{i } + t \sum_{i } (c_{i}^\dagger c_{(i+1) } +h.c. ) $$
 
-$$ = \sum_{k \sigma} (\epsilon + 2 t \cos{\frac{2 \pi k}{N}}) c^\dagger_{k \sigma} c_{k \sigma} $$
+$$ = \sum_{k } (\epsilon + 2 t \cos{\frac{2 \pi k}{N}}) c^\dagger_{k } c_{k } $$
 
 Here, $c^\dagger_{l \sigma}$ is the creation operator which creates an electron with spin $\sigma$ at site l 
 
@@ -70,8 +70,13 @@ On using this transformation on our fermionic Hamiltonian, we get the following 
 
 $$H_{sys} = \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes \epsilon _k \big( \sigma ^- . \sigma ^+ \big)_k \otimes \textbf{I}^{\otimes(N-k)} + \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( \sigma ^- \big) _k \otimes \big( \sigma^+ \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)} - \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( \sigma ^+ \big) _k \otimes \big( \sigma^- \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)}$$  
 
-
 where, $\sigma ^\pm = \frac{X \pm i Y}{2}$  
+
+$$ H_{sys} = \sum _{k=1} ^{N} \big( \sigma ^- . \sigma ^+ \big) _k + \sum _{k=1} ^{N} \big( \sigma ^- _k \sigma ^+ _{k+1} - \sigma ^+ _k \sigma ^- _{k+1} \big) $$  
+
+$$ = \sum _k \Big( \frac{\textbf{I}-Z}{2}\Big)_k + \sum _k \frac{X _k X _{k+1} - Y _k Y _{k+1}}{2} $$
+
+
 
 
 As this expression is expressed in terms of the Pauli operators, we can implement this as a gate in a quantum circuit.  
@@ -79,9 +84,6 @@ As this expression is expressed in terms of the Pauli operators, we can implemen
 ## 2. One Orbital Spinless Hubbard Model 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term. 
 $$H = \sum_i \epsilon _{i} c^\dagger _{i} c _{i} + t \sum _{i} (c^\dagger _{i} c _{i+1} + h.c.) + U \sum _{i} n _{i} n _{i+1}$$  
-
-
-
 
 ### 2.1 Fock Dimension with increasing number of lattice sites
 
