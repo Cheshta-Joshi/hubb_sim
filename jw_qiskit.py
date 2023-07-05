@@ -59,3 +59,8 @@ if N != 2 :
 H=H_hopp+H_T     
 print(H)
     
+#Sparse Pauli Operator in qiskit for the JW hamiltonian
+
+op = SparsePauliOp.from_sparse_list([("I", [0], 1)], num_qubits=N)
+for i in range(N) : 
+    op += SparsePauliOp.from_sparse_list([("I", [i], 0.5),("Z", [i], -0.5),("XX", [i,(i+1)%N], 0.5),("YY", [i,(i+1)%N], -0.5)], num_qubits=N)
