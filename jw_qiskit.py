@@ -1,6 +1,7 @@
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
+from qiskit_nature.second_q.hamiltonians.lattices import LineLattice, BoundaryCondition
 
 N = 3
 e = [1]*N
@@ -64,3 +65,19 @@ print(H)
 op = SparsePauliOp.from_sparse_list([("I", [0], 1)], num_qubits=N)
 for i in range(N) : 
     op += SparsePauliOp.from_sparse_list([("I", [i], 0.5),("Z", [i], -0.5),("XX", [i,(i+1)%N], 0.5),("YY", [i,(i+1)%N], -0.5)], num_qubits=N)
+
+#Using qiskit's lattice model to get tight binding hamiltonian for verification
+num_nodes = 4
+boundary_condition = BoundaryCondition.PERIODIC
+t = 5
+e =1
+line_lattice = LineLattice(
+    num_nodes=num_nodes,
+    edge_parameter=t,
+    onsite_parameter=e,
+    boundary_condition=boundary_condition,
+)
+set(line_lattice.graph.weighted_edge_list())
+
+mat = line_lattice.to_adjacency_matrix(weighted=True)
+print(tabulate(mat,tablefmt='plain'))
