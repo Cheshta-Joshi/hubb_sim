@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
 
+#Common functions
 def spinless_sub_dim(N,r) : 
     '''
     input : number of lattice sites (N), number of electrons (r) 
@@ -37,7 +38,20 @@ def spinless_basis(N,r) :
             basis[index] = True 
         basis_set.append(basis)
     return basis_set
-        
+
+def spinless_states_index(N) : 
+    '''Input : N, uses spinless_basis function
+    Output : Returns binary of basis states in fermionic Hamiltonian ''' 
+    index = []
+    for r in range(N+1) : 
+        b_set = spinless_basis(N,r)
+        new_bset = []
+        for b in b_set : 
+            new_b = sum([2**(N-i-1)*b[i] for i in range(N)])
+            index.append(new_b)
+    return index
+
+#Hubbard model functions      
 def hubb0_model(N,r,t,e,U): 
     ''' Generalised Tight Binding (spinless) model for periodic boundary condition
     Input : Number of lattice sites (int), number of electrons(int), hopping constant (int/float), onsite energies (list), interaction term U (int)
@@ -96,7 +110,7 @@ def hubb0_full(N,e,t,U):
     '''Full Block Diagonal Hamiltonian for some N length closed lattice '''
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub,e_sub,v_sub = hubb0_model(N,r,t,e,U)
+        H_sub = hubb0_model(N,r,t,e,U)[0]
         H_sub_list.append(H_sub)
     H = block_diag(*H_sub_list) 
     return H
