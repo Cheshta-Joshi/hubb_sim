@@ -68,13 +68,13 @@ $$c _j = Z^{\otimes (j-1)} \otimes \Big( \frac{X+iY}{2} \Big) _j \otimes I^{\oti
 
 On using this transformation on our fermionic Hamiltonian, we get the following spin Hamiltonian :  
 
-$$H_{sys} = \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes \epsilon _k \big( \sigma ^- . \sigma ^+ \big)_k \otimes \textbf{I}^{\otimes(N-k)} + \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( \sigma ^- \big) _k \otimes \big( \sigma^+ \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)} - \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( \sigma ^+ \big) _k \otimes \big( \sigma^- \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)}$$  
+$$H_{sys} = \sum _{k=1}^{N} \textbf{Z}^{\otimes (k-1)} \otimes \epsilon _k \big( \sigma ^- . \sigma ^+ \big)_k \otimes \textbf{I}^{\otimes(N-k)} + \sum _{k=1}^{N} \textbf{Z}^{\otimes (k-1)} \otimes  \big( \sigma ^- \big) _k \otimes \big( \sigma^+ \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)} - \sum _{k=1}^{N} \textbf{Z}^{\otimes (k-1)} \otimes  \big( \sigma ^+ \big) _k \otimes \big( \sigma^- \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)}$$  
 
 where, $\sigma ^\pm = \frac{X \pm i Y}{2}$  
 
-$$ H_{sys} = \sum _{k=1} ^{N} \big( \sigma ^- . \sigma ^+ \big) _k + \sum _{k=1} ^{N} \big( \sigma ^- _k \sigma ^+ _{k+1} - \sigma ^+ _k \sigma ^- _{k+1} \big) $$  
+$$ H_{sys} = \sum _{k=1} ^{N} \textbf{Z}^{\otimes (k-1)} \big( \sigma ^- . \sigma ^+ \big) _k + \sum _{k=1} ^{N} \big( \sigma ^- _k \sigma ^+ _{k+1} - \sigma ^+ _k \sigma ^- _{k+1} \big) $$  
 
-$$ = \sum _k \Big( \frac{\textbf{I}-Z}{2}\Big)_k + \sum _k \frac{X _k X _{k+1} - Y _k Y _{k+1}}{2} $$
+$$ = \sum _k \textbf{Z}^{\otimes (k-1)} \Big( \frac{\textbf{I}-Z}{2}\Big)_k + \sum _k \frac{X _k X _{k+1} - Y _k Y _{k+1}}{2} $$
 
 
 
