@@ -1,11 +1,12 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.linalg import eigh
+from scipy.linalg import eigh, block_diag
 from qiskit import *
 from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
 from tabulate import tabulate
 from itertools import combinations
+import math
 
 #common functions
 def spinless_sub_dim(N,r) : 
@@ -54,27 +55,57 @@ def spinless_states_index(N) :
 
 
 #tight binding model functions
-def tb0_model(N,t,e): 
-    ''' One-orbital Tight Binding (spinless) model for periodic boundary condition, 1 electron problem
-    Input : Number of lattice sites (int), hopping constant (int/float), onsite energies (list)
+def tb0_model(N,r,t,e): 
+    ''' Generalised Tight Binding (spinless) model for periodic boundary condition
+    Input : Number of lattice sites (int), number of electrons(int), hopping constant (int/float), onsite energies (list)
     Output : Tight binding Hamiltonian, eigenvalues and eigenvectors of the matrix ''' 
-    H = np.zeros((N, N))
-    np.fill_diagonal(H,e)                 #filling on site energies in the diagonal of H
+    dim = spinless_sub_dim(N,r)
+    if r==0 : 
+        H = np.zeros(1)
+        eigval = H[0]
+        new_vec = H
+    elif r==N : 
+        H = [[r]]
+        eigval = H[0]
+        new_vec = H
+    else : 
+        H = np.zeros((dim, dim))
+        basis_set = spinless_basis(N,r)
+        n_diag = np.zeros(dim)
+        for i in range(dim) : 
+            for j in range(N) : 
+                n_diag[i] += e[j]*basis_set[i][j]
 
-    pairs = [[i,(i+1)%N] for i in range(N)]
-    for pair in pairs :                    #filling hopping terms in H
-        H[pair[0]][pair[1]] = t
-        H[pair[1]][pair[0]] = t
-    eigval,eigvec = np.linalg.eigh(H)
-    new_vec = list(zip(*eigvec))
-    
-    return H, eigval,new_vec
+        np.fill_diagonal(H,n_diag)
+        for basis_index,basis in enumerate(basis_set) : 
+            for site in range(len(basis)) : 
+                if basis[site] == False and basis[(site+1)%N] == True : 
+                    new_state = basis.copy()
+                    new_state[site] = True
+                    new_state[(site+1)%N] = False 
+                    for i in range(len(basis_set)) : 
+                        if basis_set[i] == new_state: 
+                            f_index = i
+                    H[f_index][basis_index] +=t
+                if N != 2 : 
+                    if basis[site] == True and basis[(site+1)%N] == False : 
+                        new_state = basis.copy()
+                        new_state[site] = False
+                        new_state[(site+1)%N] = True 
+                        for i in range(len(basis_set)) : 
+                            if basis_set[i] == new_state : 
+                                f_index = i
+                        H[f_index][basis_index] +=t 
+        eigval,eigvec = np.linalg.eigh(H)
+        new_vec = list(zip(*eigvec))
+                
+    return H,eigval,new_vec
 
-def tb0_full(N,e,t,U): 
+def tb0_full(N,e,t): 
     '''Full Block Diagonal Hamiltonian for some N length closed lattice '''
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub = tb0_model(N,r,t,e,U)[0]
+        H_sub = tb0_model(N,r,t,e)[0]
         H_sub_list.append(H_sub)
     H = block_diag(*H_sub_list) 
     return H
@@ -103,11 +134,11 @@ def tb0_JW(N,e,t) :
         opt += SparsePauliOp.from_list([(a0, 0.5*e[k]), (a1, -0.5*e[k]),(new_b0, 0.5*t),(new_b1, 0.5*t)])
     return opt  
 
-def ferm_JW(mat) : 
+def ferm_JW(JW_mat) : 
     '''Input : SparsePauliOp JW matrix, uses function spinless_states_index
     Output : Returns JW matrix in order of fermionic basis states'''
     class_index = spinless_states_index(N)
-    JW_mat = mat.to_matrix()
+    #JW_mat = mat.to_matrix()
     ferm_mat = np.zeros((2**N,2**N))
     for i in range(2**N) : 
         for j in range(2**N) : 
