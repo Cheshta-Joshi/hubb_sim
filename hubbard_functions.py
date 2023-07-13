@@ -115,6 +115,57 @@ def hubb0_full(N,e,t,U):
     H = block_diag(*H_sub_list) 
     return H
 
+#JW functions
+
+def hubb0_JW(N,e,t) : 
+    strings = []
+    opt = SparsePauliOp.from_sparse_list([("I", [0], 0)], num_qubits=N)  
+    for k in range(N) : 
+        a0='I'*N
+        a1 = 'I'*(k)+'Z' +'I'*(N-k-1)
+
+        b0='I'*N
+        b0_list = list(b0)
+        b0_list[k] = 'X'
+        b0_list[(k+1)%N] = 'X'
+        new_b0 = ''.join(b0_list)
+
+        b1='I'*N
+        b1_list = list(b0)
+        b1_list[k] = 'Y'
+        b1_list[(k+1)%N] = 'Y'
+        new_b1 = ''.join(b1_list)
+        
+        c0 = 'I'*N
+        c1_list = list(c0)
+        c2_list = list(c0)
+        c3_list = list(c0)
+        c1_list[k] = 'Z'
+        c2_list[(k+1)%N] = 'Z'
+        new_c1 = ''.join(c1_list)
+        new_c2 = ''.join(c2_list)
+        
+        c3_list[k] = 'Z'
+        c3_list[(k+1)%N] = 'Z'
+        new_c3 = ''.join(c3_list)
+
+        opt += SparsePauliOp.from_list([(a0, 0.5*e[k]), (a1, -0.5*e[k]),
+                                        (new_b0, 0.5*t),(new_b1, 0.5*t),
+                                        (c0, U*0.25),(new_c1, -0.25*U),(new_c2, -0.25*U),(new_c3,U*0.25)])
+    return opt
+
+def ferm_JW(JW_mat) : 
+    '''Input : SparsePauliOp JW matrix, uses function spinless_states_index
+    Output : Returns JW matrix in order of fermionic basis states'''
+    class_index = spinless_states_index(N)
+    #JW_mat = mat.to_matrix()
+    ferm_mat = np.zeros((2**N,2**N))
+    for i in range(2**N) : 
+        for j in range(2**N) : 
+            ferm_mat[i][j] = JW_mat[class_index[i]][class_index[j]]
+    return ferm_mat
+#properties
+
 def spinless_state_vec(basis) : 
     '''Vector represnetation of basis state
     Input : Boolean list/array of a basis
