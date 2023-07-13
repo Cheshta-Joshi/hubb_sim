@@ -55,7 +55,7 @@ def spinless_states_index(N) :
 
 
 #tight binding model functions
-def tb0_model(N,r,t,e): 
+def tb0_model(N,r,e,t): 
     ''' Generalised Tight Binding (spinless) model for periodic boundary condition
     Input : Number of lattice sites (int), number of electrons(int), hopping constant (int/float), onsite energies (list)
     Output : Tight binding Hamiltonian, eigenvalues and eigenvectors of the matrix ''' 
@@ -105,7 +105,7 @@ def tb0_full(N,e,t):
     '''Full Block Diagonal Hamiltonian for some N length closed lattice '''
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub = tb0_model(N,r,t,e)[0]
+        H_sub = tb0_model(N,r,e,t)[0]
         H_sub_list.append(H_sub)
     H = block_diag(*H_sub_list) 
     return H
