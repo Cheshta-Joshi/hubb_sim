@@ -131,7 +131,10 @@ def tb0_JW(N,e,t) :
         new_b1 = ''.join(b1_list)
 
         strings.append([a0,a1,new_b0,new_b1])
-        opt += SparsePauliOp.from_list([(a0, 0.5*e[k]), (a1, -0.5*e[k]),(new_b0, 0.5*t),(new_b1, 0.5*t)])
+        val = 1
+        if N==2 and k == 1 : 
+            val = 0
+        opt += SparsePauliOp.from_list([(a0, 0.5*e[k]), (a1, -0.5*e[k]),(new_b0, 0.5*t*val),(new_b1, 0.5*t*val)])
     return opt  
 
 def ferm_JW(JW_mat) : 
