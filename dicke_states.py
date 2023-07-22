@@ -64,11 +64,12 @@ def dicke_param(n,k) :
     for a in range(k,1,-1) : 
         pairs.append([a,a-1])
 
-    num_angles = int(3*(n-k) + k*(k-1)/2)
+    num_angles = int(k*(n-k) + k*(k-1)/2)
     param = [Parameter(f"angle_{i+1}") for i in range(num_angles)]
 
     dk_circ = QuantumCircuit(n)
-    dk_circ.x(range(-1,-k-1,-1))
+    for q in range(k) : 
+        dk_circ.x(-(k+1))
     var=0
     for pair in pairs : 
         new_circ,new_var = scs_param(pair[0],pair[1],var,param)
