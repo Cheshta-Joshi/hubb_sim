@@ -52,7 +52,7 @@ def spinless_states_index(N) :
     return index
 
 #Hubbard model functions      
-def hubb0_model(N,r,t,e,U): 
+def hubb0_model(N,r,e,t,U): 
     ''' Generalised Tight Binding (spinless) model for periodic boundary condition
     Input : Number of lattice sites (int), number of electrons(int), hopping constant (int/float), onsite energies (list), interaction term U (int)
     Output : Tight binding Hamiltonian, eigenvalues and eigenvectors of the matrix ''' 
@@ -60,12 +60,16 @@ def hubb0_model(N,r,t,e,U):
     #Special Cases
     if r==0 : 
         H = np.zeros(1)
-        eigval = H[0]
-        new_vec = H
+        eigval = 0
+        new_vec = [[1]]
     elif r==N : 
-        H = [[r]]
+        H = [[sum(e)+N*U]]
         eigval = H[0]
-        new_vec = H
+        new_vec = [[1]]
+    if N == 1 and r==1: 
+        H = [e]
+        eigval = H[0]
+        new_vec = [[1]]
     else : 
         H = np.zeros((dim, dim))
         basis_set = spinless_basis(N,r)
@@ -96,12 +100,11 @@ def hubb0_model(N,r,t,e,U):
                                 f_index = i
                         H[f_index][basis_index] +=t 
         #H_U, interaction terms
-        for i in range(dim) :
-            count = 0
-            for j in range(N) : 
-                if basis_set[i][j] == 1 and basis_set[i][(j+1)%N] == 1: 
-                    count += 1 
-            H[i][i] += count * U
+        for basis_index,basis in enumerate(basis_set) : 
+            for site in range(len(basis)) : 
+                if basis[site] == True and basis[(site+1)%N] == True : 
+                    H[basis_index][basis_index] +=U
+
         eigval,eigvec = np.linalg.eigh(H)
         new_vec = list(zip(*eigvec))                   
     return H,eigval,new_vec
@@ -110,14 +113,14 @@ def hubb0_full(N,e,t,U):
     '''Full Block Diagonal Hamiltonian for some N length closed lattice '''
     H_sub_list = []
     for r in range(N+1) : 
-        H_sub = hubb0_model(N,r,t,e,U)[0]
+        H_sub = hubb0_model(N,r,e,t,U)[0]
         H_sub_list.append(H_sub)
     H = block_diag(*H_sub_list) 
     return H
 
 #JW functions
 
-def hubb0_JW(N,e,t) : 
+def hubb0_JW(N,e,t,U) : 
     strings = []
     opt = SparsePauliOp.from_sparse_list([("I", [0], 0)], num_qubits=N)  
     for k in range(N) : 
@@ -136,23 +139,69 @@ def hubb0_JW(N,e,t) :
         b1_list[(k+1)%N] = 'Y'
         new_b1 = ''.join(b1_list)
         
-        c0 = 'I'*N
-        c1_list = list(c0)
-        c2_list = list(c0)
-        c3_list = list(c0)
-        c1_list[k] = 'Z'
-        c2_list[(k+1)%N] = 'Z'
-        new_c1 = ''.join(c1_list)
-        new_c2 = ''.join(c2_list)
+        c_base='I'*N
+
+        c0 = c_base
         
+        c1_list = list(c_base)
+        c1_list[k] = 'I'
+        c1_list[(k+1)%N] = 'Z'
+        c1 = ''.join(c1_list)
+        
+        c2_list = list(c_base)
+        c2_list[k] = 'Z'
+        c2_list[(k+1)%N] = 'I'
+        c2 = ''.join(c2_list)
+        
+        c3_list = list(c_base)
         c3_list[k] = 'Z'
         c3_list[(k+1)%N] = 'Z'
-        new_c3 = ''.join(c3_list)
-
+        c3 = ''.join(c3_list)
+        T=t
+        if N==2 : 
+            T=t/2
+        
         opt += SparsePauliOp.from_list([(a0, 0.5*e[k]), (a1, -0.5*e[k]),
-                                        (new_b0, 0.5*t),(new_b1, 0.5*t),
-                                        (c0, U*0.25),(new_c1, -0.25*U),(new_c2, -0.25*U),(new_c3,U*0.25)])
+                                        (new_b0, 0.5*T),(new_b1, 0.5*T),
+                                        (c0, U*0.25),(c1, -0.25*U),(c2, -0.25*U),(c3,U*0.25)])
     return opt
+
+#Dicke states
+def scs_param(n,l,var,param) : 
+
+    circ = QuantumCircuit(n)
+    circ.cx(-2,-1)
+    circ.cry(param[var],-1,-2)
+    var+=1
+    circ.cx(-2,-1)
+
+    for i in range(l-1) : 
+        circ.cx(-3-i,-1)
+        ccry = RYGate(param[var]).control(2,label=None)
+        var+=1
+        circ.append(ccry,[-1,-2-i,-3-i])
+        circ.cx(-3-i,-1)
+    return circ, var
+
+def dicke_param(n,k) : 
+    pairs = []
+    for a in range(n,k,-1) : 
+        pairs.append([a,k])
+    for a in range(k,1,-1) : 
+        pairs.append([a,a-1])
+
+    num_angles = int(k*(n-k) + k*(k-1)/2)
+    param = [Parameter(f"angle_{i+1}") for i in range(num_angles)]
+
+    dk_circ = QuantumCircuit(n)
+    for ind in range(k) : 
+        dk_circ.x(-(1+ind))
+    var=0
+    for pair in pairs : 
+        new_circ,new_var = scs_param(pair[0],pair[1],var,param)
+        var = new_var
+        dk_circ.append(new_circ, range(pair[0]))
+    return dk_circ
 
 def ferm_JW(JW_mat) : 
     '''Input : SparsePauliOp JW matrix, uses function spinless_states_index
@@ -164,8 +213,8 @@ def ferm_JW(JW_mat) :
         for j in range(2**N) : 
             ferm_mat[i][j] = JW_mat[class_index[i]][class_index[j]]
     return ferm_mat
-#properties
 
+#properties
 def spinless_state_vec(basis) : 
     '''Vector represnetation of basis state
     Input : Boolean list/array of a basis
