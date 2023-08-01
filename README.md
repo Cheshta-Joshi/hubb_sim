@@ -204,33 +204,23 @@ $$c _j = Z^{\otimes (j-1)} \otimes \Big( \frac{X+iY}{2} \Big) _j \otimes I^{\oti
 
 On using this transformation on our fermionic Hamiltonian, we get the following spin Hamiltonian :  
 
-$$H_{sys} = \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes \epsilon _k \big( \sigma ^- . \sigma ^+ \big)_k \otimes \textbf{I}^{\otimes(N-k)} + t \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( \sigma ^- Z \big) _k \otimes \big( \sigma^+ \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)} + $$  
-
-$$ t \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes  \big( Z \sigma ^+ \big) _k \otimes \big( \sigma^- \big) _{k+1} \otimes \textbf{I}^{\otimes (N-k-1)} + U \sum _{k=1}^{N} \textbf{I}^{\otimes (k-1)} \otimes   \big( \sigma ^- . \sigma ^+ \big) _k \otimes \big( \sigma ^- . \sigma ^+ \big) _{k+1}\otimes \textbf{I}^{\otimes (N-k-1)} $$
-
-where, $\sigma ^\pm = \frac{X \pm i Y}{2}$  
-
-$$ H_{sys} = \sum _{k=1} ^{N} \epsilon _k \big( \sigma ^- . \sigma ^+ \big) _k + t \sum _{k=1} ^{N} \big( \sigma ^- _k \sigma ^+ _{k+1} - \sigma ^+ _k \sigma ^- _{k+1} \big) $$  
-
 $$ H _{JW}= \sum _k \epsilon _k \Big( \frac{\textbf{I}-Z}{2}\Big)_k + t \sum _k \frac{X _k X _{k+1} + Y _k Y _{k+1}}{2} U \sum _{k=1}^N \Big( \frac{\textbf{I}-Z}{2}\Big) _k \Big( \frac{\textbf{I}-Z}{2}\Big) _{k+1} $$
 
 As this expression is expressed in terms of the Pauli operators, we can implement this as a gate in a quantum circuit.  
 
 ## 4.2 Quantum Imaginary Time Evolution 
 
-One can use imaginary time evolution to find the ground state and energy of a Hamiltonian. A state $| \psi \rangle$ of the system can be written as : $| \psi \rangle = \sum _i c_i |b _i\rangle$, where $|b_i\rangle$ are the basis states of the system and $c_i$ are complex amplitudes. The idea behind this algorithm is to apply the time evolution operator on this state and evolve it in imaginary time, $\tau=-it$, such that , $U | \psi \rangle =e^{-H\tau} |\psi \rangle$.   
+One can use imaginary time evolution to find the ground state and energy of a Hamiltonian. A state $| \psi \rangle$ of the system can be written as : $| \psi \rangle = \sum _i c_i |b _i\rangle$, where $|b_i\rangle$ are the basis states of the system and $c_i$ are complex amplitudes. On applying the time evolution operator , $U | \psi \rangle =e^{-H\tau} |\psi \rangle$, we get :   
 
 $e^{-H \tau} | \psi \rangle = e^{-E_0 \tau} [c_0 |b_0 \rangle + e^{-(E_1-E_0) \tau} c_1 |b_1 \rangle +....+ e^{-(E_{n-1}-E_0) \tau} c_{n-1} |b_{n-1} \rangle] $  
 
-One can see that for $\tau \xrightarrow{} \infty$, all the other coefficients tend to zero and we are left with the ground state $|b_0 \rangle$. We can also evolve the state for a number of discrete small time steps and end up with a similar result. In this following sections we will perform this imaginary time evolution using different approaches and evaluate ground state energy through them. 
+One can see that for $\tau \xrightarrow{} \infty$, all the other coefficients tend to zero and we are left with the ground state $|b_0 \rangle$. 
 
-### 4.2.1 Variational Quantum Imaginary Time Evolution  
+## 4.3 Variational Quantum Imaginary Time Evolution  
 
-We use a variational quantum algorithm (VQA) to implement imaginary time evolution. VQAs are an important class of quantum algorithms which are hardware agnostic and utilize both quantum and classical method to maximize efficiency and minimize cost. These algorithms use quantum circuits to evaluate a parameterized function which is optimized by updating the parameters using a classical optimizer and is fed back to the circuit for another iteration. The basic layout of a variational algorithm involves : Choosing a quantum system and constructing its Hamiltonian, Deciding a parameterized trial function, Choosing an appropriate optimizer, Choosing an efficient measurement technique and Reducing Cost and Mitigating errors. 
+We use a variational quantum algorithm (VQA) to implement imaginary time evolution. We make use of the  **VarQITE (Qiskit)** time evolution algorithm and input an evolution problem defined using the lattice Hailtonian. The varitional algorithm takes a parameterized ansatz as input and finds a set of parameters which minimizes the expectation value of the Hamiltonian. It is therefore important to take an ansatz which spans all the wavefunctions and can be trained efficiently. In the following sections we try out two different ansatz, compare it to the benchmarked SciPy and classical results.  
 
-We make use of the  **VarQITE (Qiskit)** time evolution algorithm and input an evolution problem defined using the lattice Hailtonian. The varitional algorithm takes a parameterized ansatz as input and finds a set of parameters which minimizes the expectation value of the Hamiltonian. It is therefore important to take an ansatz which spans all the wavefunctions and can be trained efficiently. In the following sections we try out two different ansatz, compare it to the benchmarked SciPy and classical results.  
-
-#### 4.2.1.a VarQITE with SU(2)  
+### 4.3.1 VarQITE with SU(2)  
 
 When enough information about the interested eigenstate is not known, a heuristic ansatz that is arbitrarily parameterized and entangled, can be used, such as Efficient SU(2) ansatz. Here is a circuit of this ansatz repeated once. 
 
@@ -267,7 +257,7 @@ We compare the efficiency of SU(2) VarQITE method with the SciPy method. This so
 </center>  
 
 
-#### 4.2.1.b VarQITE with Dicke States' ansatz  
+#### 4.3.2 VarQITE with Dicke States' ansatz  
 
 We use the circuit to create Dicke states, which are superposition of states with equal weights, and parameterize it to form our ansatz. 
 
