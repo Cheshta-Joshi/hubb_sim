@@ -254,6 +254,7 @@ def spinless_state_occupation(states) :
     plt.ylabel('<n>')
     plt.title("Occupation of states wrt sites")
     plt.legend()
+    return site_occ
 
 def density_of_states(eigval,n_centers,zoom) :
     '''Energy density of states
