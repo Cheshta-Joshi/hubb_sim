@@ -204,7 +204,7 @@ $$c _j = Z^{\otimes (j-1)} \otimes \Big( \frac{X+iY}{2} \Big) _j \otimes I^{\oti
 
 On using this transformation on our fermionic Hamiltonian, we get the following spin Hamiltonian :  
 
-$$ H _{JW}= \sum _k \epsilon _k \Big( \frac{\textbf{I}-Z}{2}\Big)_k + t \sum _k \frac{X _k X _{k+1} + Y _k Y _{k+1}}{2} U \sum _{k=1}^N \Big( \frac{\textbf{I}-Z}{2}\Big) _k \Big( \frac{\textbf{I}-Z}{2}\Big) _{k+1} $$
+$$ H _{JW}= \sum _k \epsilon _k \Big( \frac{\textbf{I}-Z}{2}\Big)_k + t \sum _k \frac{X _k X _{k+1} + Y _k Y _{k+1}}{2} + U \sum _{k=1}^N \Big( \frac{\textbf{I}-Z}{2}\Big) _k \Big( \frac{\textbf{I}-Z}{2}\Big) _{k+1} $$
 
 As this expression is expressed in terms of the Pauli operators, we can implement this as a gate in a quantum circuit.  
 
