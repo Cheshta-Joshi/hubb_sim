@@ -271,7 +271,7 @@ We can see from the comparison below that the number of parameters required for 
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/param_comp.png" alt="DOS" width="250">
 </p>   
 
-We use this ansatz for solving different subspaces of our Hamiltonian and we can see that it gives good results not only for the ground states but for lowest eiegnavlues of all the subspaces. The following figures are for different N for U=0 and U=4 
+We use this ansatz for solving different subspaces of our Hamiltonian. The results and the properties we study are mentioned in the following section. We plot the performance of the quantum method, the numpy method the the scipy method for two different values of U. 
 
 <p align="center">
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/all_occ_u0.png" alt="u0" width="850">
@@ -280,14 +280,23 @@ We use this ansatz for solving different subspaces of our Hamiltonian and we can
 <p align="center">
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/all_occ_u4.png" alt="u4" width="850">
 </p>   
+We can see that the Dicke state variational method was able to find the correct eigenvalues for all the subspaces while the scipy method tries to find the lowest eigenvalue at all times.   
 
-We can also study the eigenvalues for different U  
+## 5. Properties  / Studying the Results
+In this section we make use of the information we received from the variaitiona method and see which properties we can study using these results.   
+
+### 5.1 Eigenvalues for different U  
+In this section we study how the energy of the system varies as the interaction increases. 
 
 <p align="center">
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/all_occ_diff_U.png" alt="eig_diff_U" width="850">
 </p>   
 
-We also test if we get the same density of states using the numpy calculated eigenvalues and using the iegenvalues obtained from VarQITE.  
+We can see that as U increases for a certain model with certain number of lattice sites, the energy of the system increases. We can also see that the lowest energy of a system is for the half-filled scenario when there is no interaction present. As the interaction increases, the lowest energy shifts to the cases where the electron occupation is less.  
+
+### 5.2 Density of States  
+
+We find the density of states from the eigenvalues we obtained from the variational method and we compare it with the density of states we get from the eigenvalues calculated from numpy. 
 
 <center>
 <table>
@@ -306,3 +315,4 @@ We also test if we get the same density of states using the numpy calculated eig
 </table>
 </center>
 
+We can see that the results we got, give a similar trend for density states. However, the values calculated are not very accurate and thus the figure is shifted from the original points. However, this is good to understand the distribution of eigenvalues over an energy range. 
