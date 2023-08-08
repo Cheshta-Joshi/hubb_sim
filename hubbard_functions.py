@@ -288,7 +288,7 @@ def s2_sub_dim(N,r_up, r_down) :
     dim = math.comb(N,r_up) * math.comb(N,r_down)
     return dim
 
-def s2_fock_dim_dict(N) : 
+def s2_fock_dim(N) : 
     '''
     input : N => Number of lattice points
     output : Dimension of fock space (dim_fock), dictionary of all subspaces with dimension { (r_up,r_down) : dim_sub } 
@@ -307,7 +307,7 @@ def s2_fock_dim_dict(N) :
         dim_fock += sub_dim
     return dim_fock, dim_dict
     
-def s2_basis_set(N,r_up,r_down) : 
+def s2_basis(N,r_up,r_down) : 
     '''
     input = number of lattice sites (N), number of spin up (r_up) and spin down electrons (r_down)
     output = list of basis [0110][0001] examp-le for N=4, r_up = 2, r_down = 1
@@ -330,8 +330,8 @@ def s2_basis_set(N,r_up,r_down) :
     basis = np.array(sub_arrays)
     return basis
 
-def s2_full_hamiltonian(N,t,U) :
-    basis = s2_basis_set(N,r_up,r_down)
+def hubb2_model(N,r_up,r_down,t,U) :
+    basis = s2_basis(N,r_up,r_down)
     sub_dim = len(basis)
     hubbard = np.zeros((sub_dim,sub_dim))
     true_counts = []
@@ -364,3 +364,54 @@ def s2_full_hamiltonian(N,t,U) :
                 for f in final_index : 
                     hubbard[f][index] += 1*t
     return(hubbard)
+
+def hubb2_model(N,r_up,r_down,t,U) :
+    basis_set = s2_basis(N,r_up,r_down)
+    dim = len(basis_set)
+    H = np.zeros((dim,dim))
+    
+    #H_U part
+    for basis_index,basis in enumerate(basis_set) : 
+        num_U = 0
+        for site in range(N) : 
+            if basis[0][site]*basis[1][site] : 
+                num_U += 1 
+        H[basis_index][basis_index] = num_U*U
+        
+    #H_T 
+    for basis_index,basis in enumerate(basis_set) : 
+        num_t = 0
+        for spin in range(2) : 
+            for site in range(N) : 
+                if basis[spin][site] == False and basis[spin][(site+1)%N] == True : 
+                    new_state = basis.copy()
+                    new_state[spin][site] = True
+                    new_state[spin][(site+1)%N] = False 
+                    for i in range(len(basis_set)) : 
+                        if np.array_equal(basis_set[i],new_state) : 
+                            f_index = i 
+                    H[f_index][basis_index] += t
+                if N != 2 : 
+                    if basis[spin][site] == True and basis[spin][(site+1)%N] == False : 
+                        new_state = basis.copy()
+                        new_state[spin][site] = False
+                        new_state[spin][(site+1)%N] = True 
+                        for i in range(len(basis_set)) : 
+                            if np.array_equal(basis_set[i],new_state) :  
+                                f_index = i 
+                        H[f_index][basis_index] += t
+    
+    eigval,eigvec = np.linalg.eigh(H)
+    new_vec = list(zip(*eigvec))                  
+    
+    return H,eigval,new_vec
+            
+def hubb2_full(N,t,U) : 
+    H_sub_list = []
+    for u in range(N+1): 
+        for d in range(N+1) : 
+            H_sub = hubb2_model(N,u,d,t,U)[0]
+            H_sub_list.append(H_sub)
+    
+    H = block_diag(*H_sub_list)
+    return H 
