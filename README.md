@@ -1,7 +1,7 @@
 # Quantum Simulation of Lattice Models 
 In this project, we study lattice models like **Tight Binding Model**, **Hubbard Model**. We generate matrices of these models, solve them using NumPy and discuss some of the properties of the eigenvalues and eigenvectors. We realize the need of quantum simulation of these models and propose a quantum method for solving them. We implement it on a quantum circuit in different ways and compare the solutions with the NumPy results. 
 
-## 1. One-Orbital, Spinless Tight Binding Model 
+## A. One-Orbital, Spinless Tight Binding Model 
 
 The Tight Binding Model describes the electronic structure of solids by considering the onsite energies and hopping energy of electrons. 
 
@@ -17,7 +17,7 @@ $H_{\text{sys}} = \sum_{k } (\epsilon + 2 t \cos{\frac{2 \pi k}{N}}) c^\dagger_{
 </p>  
 
 
-### 1.1 Eigenstate Occupation    
+### A1. Eigenstate Occupation    
 
 We create the matrices for one electron occupation Tight Binding Model and solve it using NumPy. Using the eigenstates obtained from solving the mkatrix, we find the occupation of that eigenstate at all the lattice sites and plot the probability of the state occupying the sites. In the following figures we show how different onsite energies result in different occupation of the ground state (vec 0) and the eigenstate with maximum energy (vec 1). 
 
@@ -60,7 +60,7 @@ We create the matrices for one electron occupation Tight Binding Model and solve
 </table>
 </center>
 
-### 1.2 Density of States   
+### A2. Density of States   
 
 It is used to understand the energy distribution in a system.  We find this using a delta or a lorentzian function. Once we have the eigenvalues of a system, we can find the distribution of these eigenvalues across an energy range. We can use the Lorentzian function along with the delta function to plot the density. The Lorentzian function broadens the delta function peaks corresponding to individual energy level giving a continuous density plot.   
 
@@ -71,14 +71,14 @@ $$ D(\omega )= \sum _k \delta (\omega - \epsilon _k)$$
 <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dos.png" alt="DOS" width="250">
 </p>
 
-## 2. One-Orbital, Spinless Hubbard Model   
+## B. One-Orbital, Spinless Hubbard Model   
 
 N site lattice model, with only one allowed spin. Describes the electronic structure of a solid by considering the onsite, hopping and nearest neighbour interaction term.  
 
 $$H = \sum_i \epsilon _{i} c^\dagger _{i} c _{i} + t \sum _{i} (c^\dagger _{i} c _{i+1} + h.c.) + U \sum _{i} n _{i} n _{i+1}$$  
 We now write a generalised matrix for a Hubbard model. This can now handle any electron occupation. It takes the description of the lattice model adn the number of electorns as input and returns the Hamiltonian matrix of that subspace. For an N site lattice model and r occupied electron, the dimension of the Hamiltonian becomes $^NC_r$. The sum of all such dimensions is $2^N$ which is the dimension of the whole fock space. One can divide the fock-space problem into these subspace problems and solve each of them individually to extract more information about the fock-space.  
 
-### 2.1 Eigenstate Occupation for different electron occupation  
+### B1. Eigenstate Occupation for different electron occupation  
 
 In the following figures, we solve a 12 site Hubbard Model with $\epsilon _k = 1$, t=1 and U=1. We solve it for different electron occupation and find the eiegenstate occupation.  
 
@@ -117,7 +117,7 @@ In the following figures, we solve a 12 site Hubbard Model with $\epsilon _k = 1
 </center>
 
 
-### 2.2 Density of States for different electron occupation  
+### B2. Density of States for different electron occupation  
 
 In the following figures, we solve a 12 site Hubbard Model with $\epsilon _k = 1$, t=1 and U=1. We solve it for different electron occupation and find the density of states.  
 
@@ -156,6 +156,10 @@ In the following figures, we solve a 12 site Hubbard Model with $\epsilon _k = 1
 </center>
 
 We conclude from above data that a lattice problem with r-electron is the same as a problem with r holes. Their eigenvalues, eigenstates, their site occupation and the density of states have similar trends. 
+
+## C. One-Orbital Full Hubbard Model  
+
+$$ H = t \sum_{j, \sigma} (c^\dagger_{j , \sigma} c_{j+1, \sigma } + c^\dagger_{j+1, \sigma} c_{j \sigma}) + U \sum_j n_{j \uparrow} n_{j \downarrow} $$
 
 ## 3. Why Quantum?  
 We can solve a lattice model effectively by breaking down the problem into its subspces and solving them using NumPy. However, as the number of sites increases, the dimension of subspaces increase and the time taken to generate their basis and then generate the Hamiltonian becomes exponentially larger.    
