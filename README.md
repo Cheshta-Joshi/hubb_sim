@@ -159,7 +159,31 @@ We conclude from above data that a lattice problem with r-electron is the same a
 
 ## C. One-Orbital Full Hubbard Model  
 
-$$ H = t \sum_{j, \sigma} (c^\dagger_{j , \sigma} c_{j+1, \sigma } + c^\dagger_{j+1, \sigma} c_{j \sigma}) + U \sum_j n_{j \uparrow} n_{j \downarrow} $$
+$$ H = t \sum_{j, \sigma} (c^\dagger_{j , \sigma} c_{j+1, \sigma } + c^\dagger_{j+1, \sigma} c_{j \sigma}) + U \sum_j n_{j \uparrow} n_{j \downarrow} $$  
+
+For one orbital models with two allowed spins, the fock dimension is exponentially larger than fock dimension of spinless models. While spinless one orbital model has $2^n$ dimension, the full model has $4^n$ dimensions. We can see how the dimension for the two models increases in the figure.   
+
+<center>
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/dicke_dos_true.png" alt="Image 1" width="350" />
+      <br />
+      DOS NumPy
+    </td>
+    <td align="center">
+      <img src="https://github.com/Cheshta-Joshi/hubb_sim/blob/main/images/hubb2/spin2_dim_heatmap.png" alt="Image 2" width="350" />
+      <br />
+      DOS VarQITE
+    </td>
+  </tr>
+</table>
+</center>
+
+
+For each combination of up and down electrons, the model will have a subspace of a specific dimension. We can see how the subspace dimension varies with number of up and down electrons with the following plot : 
+
+
 
 ## 3. Why Quantum?  
 We can solve a lattice model effectively by breaking down the problem into its subspces and solving them using NumPy. However, as the number of sites increases, the dimension of subspaces increase and the time taken to generate their basis and then generate the Hamiltonian becomes exponentially larger.    
