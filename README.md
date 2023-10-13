@@ -1,3 +1,11 @@
+# About this repo   
+1. hubbard_functions.py  : Contains all the functions programmed and used for solving one-dimensional hubbard model. It includes numpy based functions to : calculate the dimension, set basis states for the system, hamiltonian of the subspace and the fock space for a given N (number of lattice sites and electron occupancy (r)). It also conatns functions which generates the hamiltonian of the system in temrs of spin operators and some functions are to study some properties of the system for example the density of states and site occupation fo eigenstates.
+2. hubb0_properties, hubb2_properies : Contains some visuals which explain the properties of the hubbard model with 1 and 2 allowed spins respectively at each site.
+3. VarQITE Results : Contains the solutions for Variational Quantum Imaginary Time Evolution for different ansatz. It also contains the companrison results and the overall performance of the algorithm for one-dimensional hubbard model for 2 to 8 lattice size.
+===================================================================================
+
+
+
 # Quantum Simulation of Lattice Models 
 In this project, we study lattice models like **Tight Binding Model**, **Hubbard Model**. We generate matrices of these models, solve them using NumPy and discuss some of the properties of the eigenvalues and eigenvectors. We realize the need of quantum simulation of these models and propose a quantum method for solving them. We implement it on a quantum circuit in different ways and compare the solutions with the NumPy results. 
 
