@@ -6,6 +6,12 @@ import matplotlib.pyplot as plt
 from scipy.linalg import eigh, block_diag
 from tabulate import tabulate
 
+from qiskit import *
+from qiskit.quantum_info import SparsePauliOp
+from qiskit.circuit import Parameter, ParameterVector
+from qiskit.circuit.library import RYGate
+import matplotlib.pyplot as plt
+
 #Common functions
 def spinless_sub_dim(N,r) : 
     '''
@@ -234,7 +240,7 @@ def spinless_state_vec(basis) :
         vec[index] = 1
     return vec
     
-def spinless_state_occupation(states) :
+def spinless_state_occupation(N,r,states) :
     '''Describes occupation of eigenstates over the lattice sites 
     Input : list of eigenstates
     Output : plots the occuptation number graph and 
@@ -256,26 +262,28 @@ def spinless_state_occupation(states) :
     plt.legend()
     return site_occ
 
-def density_of_states(eigval,n_centers,zoom) :
-    '''Energy density of states
-    Input : eigenvalues (list), Number of points for density calculation, Zoom the density part of the plot
-    Output : Plot of energy density of states]'''
-    gamma = (eigval[-1]-eigval[0])/n_centers
-    centers = np.linspace(eigval[0]-n_centers/zoom, eigval[-1]+n_centers/zoom, num=n_centers)
-    
+def density_of_states(eigval,n_centers,gamma) :
+    centers = np.linspace(eigval[0]-2, eigval[-1]+2, num=n_centers)
     density = np.zeros(n_centers)
     for i, center in enumerate(centers):
         if center < eigval[0] or center > eigval[-1]: 
             density[i] = 0 
         else : 
             lorentz = np.sum(1 / np.pi * (gamma / 2) / ((center - eigval)**2 + (gamma / 2)**2))
+            #print(lorentz)
             density[i] = lorentz
+    #print(density)
+    #plt.figure(figsize=(5,4))
     norm_density = [float(i)/sum(density) for i in density]
-    plt.plot(centers,norm_density)
+    #print(norm_density)
+    plt.plot(centers,norm_density,label='Density of states')
+    #plt.ylim(0.4,0.7)
+    #plt.text(eigval[0] + 0.3, 0.01, round(eigval[0],3), rotation=0)
+    plt.axvline(x=eigval[0], color='black',linestyle='--',label='Ground state energy')
     plt.xlabel('Energy of system')
     plt.ylabel('Density of states')
-    plt.title("Density of states")
-    return density
+    plt.legend()
+
 
 ''' Below functions are for an N site open lattice model, where electrons can be in up or down spin 
 and the hamiltonian includes the hopping and onsite energy terms ''' 
